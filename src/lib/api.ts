@@ -27,8 +27,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 // ── Axios instance ──────────────────────────────────────────
 const api: AxiosInstance = axios.create({
-  baseURL: `${API_BASE}/api/v1`,
-  headers: { "Content-Type": "application/json" },
+  baseURL: "/api/proxy",
 });
 
 // Attach JWT token to dashboard requests
