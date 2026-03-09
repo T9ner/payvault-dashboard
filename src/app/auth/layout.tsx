@@ -1,3 +1,5 @@
+"use client";
+
 import { CreditCard, Shield, Zap, BarChart3 } from "lucide-react";
 
 export default function AuthLayout({
