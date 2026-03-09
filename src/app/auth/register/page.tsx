@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/api";
-import { Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Loader2, ArrowRight, Mail, Lock, Building2 } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function RegisterPage() {
         password,
       });
       auth.setToken(res.token);
-      router.push("/dashboard");
+      router.replace("/dashboard");
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "response" in err
@@ -44,14 +44,14 @@ export default function RegisterPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Create your account</h1>
         <p className="text-sm text-[hsl(var(--muted-foreground))]">
           Start accepting payments in under 10 minutes
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
           <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-400">
             <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-red-500" />
@@ -63,30 +63,36 @@ export default function RegisterPage() {
           <label className="text-sm font-medium" htmlFor="businessName">
             Business name
           </label>
-          <input
-            id="businessName"
-            type="text"
-            value={businessName}
-            onChange={(e) => setBusinessName(e.target.value)}
-            placeholder="Acme Inc."
-            required
-            className="flex h-11 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3.5 py-2 text-sm outline-none transition-all placeholder:text-[hsl(var(--muted-foreground))] hover:border-[hsl(var(--muted-foreground))]/30 focus:border-[hsl(var(--primary))] focus:ring-2 focus:ring-[hsl(var(--ring))]/20"
-          />
+          <div className="relative">
+            <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(var(--muted-foreground))]" />
+            <input
+              id="businessName"
+              type="text"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Acme Inc."
+              required
+              className="flex h-11 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] pl-10 pr-3.5 py-2 text-sm outline-none transition-all placeholder:text-[hsl(var(--muted-foreground))]/50 hover:border-[hsl(var(--muted-foreground))]/40 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+            />
+          </div>
         </div>
 
         <div className="space-y-1.5">
           <label className="text-sm font-medium" htmlFor="email">
             Work email
           </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@business.com"
-            required
-            className="flex h-11 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3.5 py-2 text-sm outline-none transition-all placeholder:text-[hsl(var(--muted-foreground))] hover:border-[hsl(var(--muted-foreground))]/30 focus:border-[hsl(var(--primary))] focus:ring-2 focus:ring-[hsl(var(--ring))]/20"
-          />
+          <div className="relative">
+            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(var(--muted-foreground))]" />
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@business.com"
+              required
+              className="flex h-11 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] pl-10 pr-3.5 py-2 text-sm outline-none transition-all placeholder:text-[hsl(var(--muted-foreground))]/50 hover:border-[hsl(var(--muted-foreground))]/40 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+            />
+          </div>
         </div>
 
         <div className="space-y-1.5">
@@ -94,6 +100,7 @@ export default function RegisterPage() {
             Password
           </label>
           <div className="relative">
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(var(--muted-foreground))]" />
             <input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -102,7 +109,7 @@ export default function RegisterPage() {
               placeholder="Min 8 characters"
               required
               minLength={8}
-              className="flex h-11 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3.5 py-2 pr-10 text-sm outline-none transition-all placeholder:text-[hsl(var(--muted-foreground))] hover:border-[hsl(var(--muted-foreground))]/30 focus:border-[hsl(var(--primary))] focus:ring-2 focus:ring-[hsl(var(--ring))]/20"
+              className="flex h-11 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] pl-10 pr-10 py-2 text-sm outline-none transition-all placeholder:text-[hsl(var(--muted-foreground))]/50 hover:border-[hsl(var(--muted-foreground))]/40 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
             />
             <button
               type="button"
@@ -120,7 +127,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[hsl(var(--primary))] text-sm font-medium text-[hsl(var(--primary-foreground))] shadow-sm transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+          className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
         >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -159,7 +166,7 @@ export default function RegisterPage() {
       {/* Sign in CTA */}
       <Link
         href="/auth/login"
-        className="flex h-11 w-full items-center justify-center rounded-lg border-2 border-[hsl(var(--border))] bg-transparent text-sm font-medium text-[hsl(var(--foreground))] shadow-sm transition-all hover:bg-[hsl(var(--accent))] hover:border-[hsl(var(--muted-foreground))]/30 active:scale-[0.98]"
+        className="flex h-11 w-full items-center justify-center rounded-lg border-2 border-emerald-600/20 bg-emerald-50 text-sm font-semibold text-emerald-700 shadow-sm transition-all hover:bg-emerald-100 hover:border-emerald-600/30 active:scale-[0.98] dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-500/20 dark:hover:bg-emerald-950/50"
       >
         Sign in instead
       </Link>
