@@ -23,7 +23,7 @@ import type {
   StatusTransition,
 } from "./types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_BASE = import.meta.env.VITE_API_URL || "";
 
 // ── Axios instance ──────────────────────────────────────────
 const api: AxiosInstance = axios.create({
