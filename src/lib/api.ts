@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
 import Cookies from "js-cookie";
 import type {
   AuthResponse,
@@ -23,7 +23,7 @@ import type {
   StatusTransition,
 } from "./types";
 
-const API_BASE = import.meta.env.VITE_API_URL || "";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
 
 // ── Axios instance ──────────────────────────────────────────
 const api: AxiosInstance = axios.create({
@@ -36,6 +36,9 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = Cookies.get("pv_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log("[API] Request with token to:", config.url);
+  } else {
+    console.log("[API] Request WITHOUT token to:", config.url);
   }
   return config;
 });
@@ -56,19 +59,29 @@ export const auth = {
     api.post<AuthResponse>("/auth/login", data).then((r) => r.data),
 
   setToken: (token: string) => {
-    Cookies.set("pv_token", token, { expires: 7, sameSite: "lax" });
+    console.log("[Auth] Setting token");
+    Cookies.set("pv_token", token, { expires: 7, sameSite: "lax", path: "/" });
   },
 
-  getToken: () => Cookies.get("pv_token"),
+  getToken: () => {
+    const token = Cookies.get("pv_token");
+    console.log("[Auth] Getting token:", token ? "exists" : "missing");
+    return token;
+  },
 
   logout: () => {
+    console.log("[Auth] Logging out");
     Cookies.remove("pv_token");
     if (typeof window !== "undefined") {
       window.location.href = "/auth/login";
     }
   },
 
-  isAuthenticated: () => !!Cookies.get("pv_token"),
+  isAuthenticated: () => {
+    const hasToken = !!Cookies.get("pv_token");
+    console.log("[Auth] Checking authentication:", hasToken);
+    return hasToken;
+  },
 };
 
 // ── Dashboard (JWT-protected) ───────────────────────────────

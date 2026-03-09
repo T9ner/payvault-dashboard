@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import {
   DollarSign,
@@ -100,6 +101,9 @@ export default function DashboardPage() {
 
     async function load() {
       try {
+        // Add a small delay to ensure token is available
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const [txns, payLinks] = await Promise.allSettled([
           payments.listTransactions({ limit: 10 }),
           dashboard.listPaymentLinks(),
@@ -219,12 +223,12 @@ export default function DashboardPage() {
       <div className="rounded-xl border bg-[hsl(var(--card))]">
         <div className="flex items-center justify-between border-b px-6 py-4">
           <h3 className="text-sm font-medium">Recent Transactions</h3>
-          <a
+          <Link
             href="/dashboard/transactions"
             className="text-xs font-medium text-[hsl(var(--primary))] hover:underline"
           >
             View all
-          </a>
+          </Link>
         </div>
         <div className="overflow-x-auto">
           {loading ? (

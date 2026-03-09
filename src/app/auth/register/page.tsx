@@ -27,6 +27,8 @@ export default function RegisterPage() {
         password,
       });
       auth.setToken(res.token);
+      // Small delay to ensure cookie is persisted before navigation
+      await new Promise(resolve => setTimeout(resolve, 100));
       router.replace("/dashboard");
     } catch (err: unknown) {
       const msg =
