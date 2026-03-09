@@ -27,10 +27,11 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 // ── Axios instance ──────────────────────────────────────────
 const api: AxiosInstance = axios.create({
-  baseURL: "/api/proxy",
+  baseURL: `${API_BASE}/api/v1`,
+  headers: { "Content-Type": "application/json" },
 });
 
-// Attach JWT token to dashboard requests
+// Attach JWT token to requests
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = Cookies.get("pv_token");
   if (token) {
@@ -39,32 +40,12 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-// Track whether we're already redirecting to prevent loops
-let isRedirecting = false;
-
-// Redirect to login on 401 — but only for dashboard/payment endpoints, not auth
-api.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    if (
-      err.response?.status === 401 &&
-      typeof window !== "undefined" &&
-      !isRedirecting
-    ) {
-      const url = err.config?.url || "";
-      // Only redirect if the 401 came from a protected endpoint, not from /auth/*
-      const isAuthEndpoint = url.includes("/auth/");
-      const isOnAuthPage = window.location.pathname.startsWith("/auth");
-
-      if (!isAuthEndpoint && !isOnAuthPage) {
-        isRedirecting = true;
-        Cookies.remove("pv_token");
-        window.location.href = "/auth/login";
-      }
-    }
-    return Promise.reject(err);
-  }
-);
+// ── NO automatic 401 redirect interceptor ───────────────────
+// Each page handles its own errors via try/catch or Promise.allSettled.
+// The old interceptor was nuking the cookie and redirecting on ANY 401,
+// which caused the "dashboard flashes then kicks to login" bug because
+// /payments/* endpoints return 401 when they expect an API key, not JWT.
+// ─────────────────────────────────────────────────────────────
 
 // ── Auth ────────────────────────────────────────────────────
 export const auth = {
@@ -82,7 +63,9 @@ export const auth = {
 
   logout: () => {
     Cookies.remove("pv_token");
-    window.location.href = "/auth/login";
+    if (typeof window !== "undefined") {
+      window.location.href = "/auth/login";
+    }
   },
 
   isAuthenticated: () => !!Cookies.get("pv_token"),
